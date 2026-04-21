@@ -1,31 +1,26 @@
-# Premium PDF Viewer
+# digiApps PDF Viewer
 
-A high-performance, framework-less PDF viewer built with HTML, CSS, Vanilla JavaScript, and Mozilla's `pdf.js`.
+A lightweight and functional PDF viewer built with pure JavaScript, Tailwind CSS, and PDF.js. Designed for a comfortable reading experience with continuous scroll and a built-in dark theme.
 
 ## Features
+- **Continuous Scroll**: All pages loaded in a single vertical list for a fluid experience.
+- **Lazy Rendering**: Uses Intersection Observer to only render pages near the viewport, saving memory and boosting performance.
+- **Toolbar**: Dedicated controls for zoom (up to 500%), smooth pagination, and high-quality native printing.
+- **Sidebar**: Interactive thumbnail list for quick document navigation and previews.
 
-- **Vanilla Stack**: Pure JS implementation, no frameworks (Vue, React, etc.).
-- **URL Parameter Loading**: Load any PDF via query string: `?file=https://example.com/doc.pdf`.
-- **Premium UI**: 
-  - Glassmorphic toolbar.
-  - Dark/Light mode toggle.
-  - Smooth zoom & navigation.
-  - Responsive design.
-- **Keyboard Friendly**: Use arrow keys and shortcuts for navigation.
+## Tech Stack
+- **Vanilla JavaScript**: Pure logic without heavy frameworks.
+- **Tailwind CSS**: Modern utility-first styling.
+- **PDF.js**: Industry-standard PDF rendering by Mozilla.
 
-## Setup
+## Setup & Usage
+No build process is required. Simply open the `index.html` file in any modern web browser or serve it using a local server.
 
-Since this is a vanilla project, you can run it using any simple local server.
-
-### Option 1: Live Server (VS Code)
-Just right-click `index.html` and select **Open with Live Server**.
-
-### Option 2: NPX
-```bash
-npx serve .
+### Load a specific PDF
+You can load any PDF by appending the `file` parameter to the URL:
+```text
+index.html?file=your-document.pdf
 ```
 
-## Usage
-
-Append the PDF URL to your address:
-`index.html?file=https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf`
+---
+Developed by [digiApps](https://digiapps.com.co)

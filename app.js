@@ -1,21 +1,12 @@
-// PDF.js worker setup
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-/**
- * PDF Viewer Application - Continuous Scroll Edition
- */
 class PDFViewer {
     constructor() {
         this.pdfDoc = null;
         this.pageNum = 1;
-        this.pageRendering = false;
         this.scale = 1.0;
-        
-        // State
-        this.pages = []; // Almacena info de cada página { num, container, rendered }
-        this.isInitialLoad = true;
+        this.pages = [];
 
-        // UI Elements
         this.prevBtn = document.getElementById('prev-page');
         this.nextBtn = document.getElementById('next-page');
         this.pageNumInput = document.getElementById('page-num');
@@ -31,11 +22,9 @@ class PDFViewer {
         this.printContainer = document.getElementById('print-container');
         this.viewerContainer = document.getElementById('viewer-container');
         this.currentUrl = null;
-
         this.sidebarToggle = document.getElementById('sidebar-toggle');
         this.thumbnailList = document.getElementById('thumbnail-list');
 
-        // Observer para la carga perezosa (Lazy Load)
         this.lazyObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -44,11 +33,10 @@ class PDFViewer {
                 }
             });
         }, {
-            rootMargin: '500px 0px', // Cargar 500px antes de que entre en vista
+            rootMargin: '500px 0px',
             threshold: 0.1
         });
 
-        // Observer para sincronizar la paginación de la toolbar
         this.pageObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
@@ -65,15 +53,12 @@ class PDFViewer {
 
     async init() {
         this.setupEventListeners();
-
         const urlParams = new URLSearchParams(window.location.search);
         let pdfUrl = urlParams.get('file') || urlParams.get('url');
-
         if (!pdfUrl) {
             pdfUrl = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
         }
         this.currentUrl = pdfUrl;
-
         try {
             await this.loadDocument(pdfUrl);
             const fileName = pdfUrl.split('/').pop().split('?')[0];
@@ -88,21 +73,17 @@ class PDFViewer {
     setupEventListeners() {
         this.prevBtn.addEventListener('click', () => this.scrollToPage(this.pageNum - 1));
         this.nextBtn.addEventListener('click', () => this.scrollToPage(this.pageNum + 1));
-
         this.sidebarToggle.addEventListener('click', () => {
             this.sidebar.classList.toggle('hidden');
         });
-
         this.pageNumInput.addEventListener('change', (e) => {
             const val = parseInt(e.target.value);
             if (this.pdfDoc && val > 0 && val <= this.pdfDoc.numPages) {
                 this.scrollToPage(val);
             }
         });
-
         this.zoomInBtn.addEventListener('click', () => this.changeScale(0.25));
         this.zoomOutBtn.addEventListener('click', () => this.changeScale(-0.25));
-
         this.zoomSelect.addEventListener('change', (e) => {
             const val = e.target.value;
             if (val === 'page-fit' || val === 'page-width') {
@@ -112,11 +93,9 @@ class PDFViewer {
                 this.reRenderAllPages();
             }
         });
-
         if (this.printBtn) {
             this.printBtn.addEventListener('click', () => this.printDocument());
         }
-
         window.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === 'PageDown') this.scrollToPage(this.pageNum + 1);
             if (e.key === 'ArrowLeft' || e.key === 'PageUp') this.scrollToPage(this.pageNum - 1);
@@ -126,15 +105,11 @@ class PDFViewer {
     async loadDocument(url) {
         this.showLoading(true);
         this.errorMsg.classList.add('hidden');
-
         try {
             const loadingTask = pdfjsLib.getDocument(url);
             this.pdfDoc = await loadingTask.promise;
             this.pageTotalSpan.textContent = this.pdfDoc.numPages;
-            
-            // Crear contenedores para todas las páginas
             this.createPagePlaceholders();
-            
             this.showLoading(false);
         } catch (err) {
             this.showLoading(false);
@@ -146,27 +121,19 @@ class PDFViewer {
         const firstPage = await this.pdfDoc.getPage(1);
         const viewport = firstPage.getViewport({ scale: this.scale });
         const aspectRatio = viewport.width / viewport.height;
-
-        // Limpiar contenedor
         const loadingSpinner = document.getElementById('loading-spinner');
         const errorMsg = document.getElementById('error-message');
         this.viewerContainer.innerHTML = '';
         this.viewerContainer.appendChild(loadingSpinner);
         this.viewerContainer.appendChild(errorMsg);
-
         this.pages = [];
-
         for (let i = 1; i <= this.pdfDoc.numPages; i++) {
             const container = document.createElement('div');
             container.id = `page-container-${i}`;
             container.className = 'page-wrapper mb-8 py-4 flex justify-center w-full min-h-[500px] transition-all';
             container.dataset.page = i;
-            
-            // Estimar altura inicial basada en el aspect ratio de la primera página
             container.style.aspectRatio = `${aspectRatio}`;
-            
             this.viewerContainer.appendChild(container);
-            
             const pageData = {
                 num: i,
                 container: container,
@@ -174,7 +141,6 @@ class PDFViewer {
                 rendering: false
             };
             this.pages.push(pageData);
-            
             this.lazyObserver.observe(container);
             this.pageObserver.observe(container);
         }
@@ -183,35 +149,24 @@ class PDFViewer {
     async renderVisiblePage(pageNum) {
         const pageData = this.pages[pageNum - 1];
         if (!pageData || pageData.rendered || pageData.rendering) return;
-
         pageData.rendering = true;
-        
         try {
             const page = await this.pdfDoc.getPage(pageNum);
             const viewport = page.getViewport({ scale: this.scale });
-            
             const canvas = document.createElement('canvas');
             canvas.className = 'shadow-premium bg-white transition-opacity duration-500 opacity-0';
             const context = canvas.getContext('2d');
-            
             canvas.height = viewport.height;
             canvas.width = viewport.width;
-            
-            // Si ya hay un canvas antiguo, lo quitamos
             pageData.container.innerHTML = '';
             pageData.container.appendChild(canvas);
-            
             await page.render({
                 canvasContext: context,
                 viewport: viewport
             }).promise;
-            
             pageData.rendered = true;
             pageData.rendering = false;
-            
-            // Mostrar con animación
             setTimeout(() => canvas.classList.remove('opacity-0'), 10);
-            
         } catch (err) {
             console.error(`Error renderizando página ${pageNum}:`, err);
             pageData.rendering = false;
@@ -235,34 +190,26 @@ class PDFViewer {
     async renderThumbnails() {
         if (!this.pdfDoc) return;
         this.thumbnailList.innerHTML = '';
-
         for (let i = 1; i <= this.pdfDoc.numPages; i++) {
             const page = await this.pdfDoc.getPage(i);
-
             const item = document.createElement('div');
             item.className = `thumbnail-item group cursor-pointer flex flex-col items-center gap-2 transition-all hover:scale-105 ${i === this.pageNum ? 'active' : ''}`;
             item.dataset.page = i;
-
             const canvas = document.createElement('canvas');
             canvas.className = 'w-full h-auto bg-white border-2 border-transparent rounded-lg shadow-sm group-hover:shadow-md transition-all';
-            
             const label = document.createElement('span');
             label.className = `text-xs font-medium tracking-wider ${i === this.pageNum ? 'text-primary' : 'text-[#f5f5f5] opacity-60'}`;
             label.textContent = `Page ${i}`;
-
             item.appendChild(canvas);
             item.appendChild(label);
             this.thumbnailList.appendChild(item);
-
             const viewport = page.getViewport({ scale: 0.3 });
             canvas.height = viewport.height;
             canvas.width = viewport.width;
-
             await page.render({
                 canvasContext: canvas.getContext('2d'),
                 viewport: viewport
             }).promise;
-
             item.addEventListener('click', () => this.scrollToPage(i));
         }
     }
@@ -273,7 +220,6 @@ class PDFViewer {
             const canvas = item.querySelector('canvas');
             const label = item.querySelector('span');
             const isPage = parseInt(item.dataset.page) === num;
-
             if (isPage) {
                 item.classList.add('active');
                 canvas.classList.add('border-primary', 'ring-2', 'ring-primary/20');
@@ -299,7 +245,6 @@ class PDFViewer {
         const padding = 80;
         const availableWidth = this.viewerContainer.clientWidth - (padding * 2);
         const availableHeight = this.viewerContainer.clientHeight - (padding * 2);
-
         this.pdfDoc.getPage(this.pageNum).then(page => {
             const unscaledViewport = page.getViewport({ scale: 1.0 });
             if (mode === 'page-width') {
@@ -315,22 +260,15 @@ class PDFViewer {
 
     async reRenderAllPages() {
         if (!this.pdfDoc) return;
-        
-        // Obtenemos las dimensiones de la primera página para ajustar los placeholders
         const firstPage = await this.pdfDoc.getPage(1);
         const viewport = firstPage.getViewport({ scale: this.scale });
         const aspectRatio = viewport.width / viewport.height;
-
         this.pages.forEach(p => {
             p.rendered = false;
             p.rendering = false;
             p.container.innerHTML = '';
-            
-            // Actualizamos el aspecto y altura mínima para que el scroll sea coherente
             p.container.style.aspectRatio = `${aspectRatio}`;
             p.container.style.minHeight = `${viewport.height}px`;
-            
-            // Forzamos al observador a notar el cambio
             this.lazyObserver.unobserve(p.container);
             this.lazyObserver.observe(p.container);
         });
@@ -340,7 +278,6 @@ class PDFViewer {
         if (!this.pdfDoc) return;
         this.showLoading(true);
         this.printContainer.innerHTML = '';
-
         try {
             const pages = Array.from({ length: this.pdfDoc.numPages }, (_, i) => i + 1);
             const renderPromises = pages.map(async (num) => {
@@ -353,10 +290,8 @@ class PDFViewer {
                 await page.render({ canvasContext: context, viewport }).promise;
                 return canvas;
             });
-
             const renderedCanvases = await Promise.all(renderPromises);
             renderedCanvases.forEach(canvas => this.printContainer.appendChild(canvas));
-
             this.showLoading(false);
             window.print();
         } catch (err) {
@@ -382,5 +317,4 @@ class PDFViewer {
     }
 }
 
-// Inicializar la app
 new PDFViewer();

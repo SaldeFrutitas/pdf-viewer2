@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-red-200">
+<html lang="en" class="h-full bg-red-900 p-2">
 
 <head>
     <meta charset="UTF-8">
@@ -43,110 +43,104 @@
                 @apply backdrop-blur-xl bg-white/80 border border-white/20;
             }
             .scrollbar-hide::-webkit-scrollbar {
-                display: none;
+                width: 7px;
             }
             .scrollbar-custom::-webkit-scrollbar {
-                width: 6px;
+                width: 5px;
             }
             .scrollbar-custom::-webkit-scrollbar-track {
                 background: transparent;
             }
             .scrollbar-custom::-webkit-scrollbar-thumb {
-                @apply bg-slate-200 rounded-full hover:bg-slate-300;
+                @apply bg-slate-500/30 rounded-full hover:bg-white/50;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                overflow: visible !important;
+            }
+            #app {
+                display: none !important;
+            }
+            #print-container {
+                display: block !important;
+            }
+            #print-container canvas {
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                page-break-after: always !important;
+                box-shadow: none !important;
+                margin: 0 !important;
             }
         }
     </style>
 </head>
 
-<body class="bg-blur-200 text-slate-800 h-full overflow-hidden font-sans border">
+<body class="bg-blur-200 text-slate-800 h-full overflow-hidden font-sans rounded-2xl">
+    <!-- Main Application UI -->
     <div id="app" class="flex h-full w-full">
-        <!-- Sidebar -->
-        <aside id="sidebar"
-            class="hidden w-64 bg-white border-r border-premium-border flex flex-col transition-all duration-300 z-40 transform">
-            <div class="px-5 py-6 border-b border-premium-border">
-                <h2 class="text-lg font-semibold text-slate-700">Documento</h2>
-            </div>
-            <div id="thumbnail-list" class="flex-1 overflow-y-auto scrollbar-custom p-5 space-y-6">
-                <!-- Thumbnails injected here -->
-            </div>
-        </aside>
-
-        <main id="main-content" class="flex-1 flex flex-col relative overflow-hidden">
-            <!-- PDF Viewer Area -->
-            <div id="viewer-container"
-                class="flex-1 overflow-auto p-10 flex flex-col items-center bg-slate-100/50 scroll-smooth scrollbar-custom">
-                <!-- Loading State -->
-                <div id="loading-spinner" class="mt-20 flex space-x-2 justify-center items-center">
-                    <div class="h-3 w-3 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                    <div class="h-3 w-3 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                    <div class="h-3 w-3 bg-primary rounded-full animate-bounce"></div>
-                </div>
-
-                <!-- Error State -->
-                <div id="error-message"
-                    class="hidden mt-20 max-w-md p-6 bg-red-50 border border-red-200 rounded-2xl text-center text-red-600">
-                    <p class="font-medium">No se pudo cargar el PDF.</p>
-                    <p class="text-sm opacity-75 mt-1">Verifica la URL y los permisos CORS.</p>
-                </div>
-
-                <!-- Main Canvas -->
-                <canvas id="pdf-canvas"
-                    class="hidden shadow-premium bg-white transition-transform duration-200"></canvas>
-            </div>
-
-            <!-- Redesigned Toolbar mit Rounded Top Borders -->
-            <footer class="absolute bottom-0 left-0 right-0 flex justify-center px-4 pb-0 z-50">
+        <main id="main-content" class="flex-1 flex flex-col overflow-hidden rounded-2xl">
+            <!-- Toolbar -->
+            <footer class="flex justify-center pb-0 z-50">
                 <div id="toolbar"
-                    class="glass rounded-t-3xl shadow-toolbar w-full max-w-4xl flex items-center justify-between px-8 py-3 translate-y-0 transition-transform">
-                    <div class="flex items-center space-x-3">
-                        <button id="sidebar-toggle" title="Miniaturas"
-                            class="p-2 hover:bg-slate-100 rounded-xl transition-colors text-slate-600">
+                    class="rounded-t-2xl shadow-toolbar w-full flex items-center justify-between bg-[#252525] p-1 translate-y-0 transition-transform">
+
+                    <!-- Segment 1 -->
+                    <div class="flex flex-1 items-center justify-start">
+                        <button id="sidebar-toggle" title="Miniaturas" 
+                                class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
+                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 6h16M4 12h16M4 18h7" />
                             </svg>
                         </button>
-                        <div class="h-6 w-px bg-slate-200"></div>
                         <span id="doc-title"
-                            class="text-sm font-semibold truncate max-w-[150px] text-slate-700">Cargando...</span>
+                            class="text-sm font-semibold truncate max-w-[150px] text-slate-700 hidden">Cargando...</span>
                     </div>
 
-                    <div class="flex items-center space-x-6">
-                        <!-- Pagination -->
-                        <div class="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl">
-                            <button id="prev-page"
-                                class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Segment 2 -->
+                    <div class="flex flex-1 items-center justify-center space-x-8">
+                        <div class="flex items-center space-x-2 rounded-xl">
+                            <button id="prev-page" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
+                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15 19l-7-7 7-7" />
                                 </svg>
                             </button>
-                            <div class="flex items-center space-x-2 px-1">
+                            <div class="flex items-center">
                                 <input type="number" id="page-num" value="1" min="1"
-                                    class="w-10 bg-transparent border-none text-center font-bold text-sm focus:ring-0 p-0 text-slate-800">
-                                <span class="text-slate-400 font-medium select-none">/</span>
-                                <span id="page-total" class="text-sm font-medium text-slate-500">0</span>
+                                    class="w-10 bg-transparent border-none text-center font-bold text-sm focus:ring-0 p-0 text-[#f5f5f5]">
+                                <span class="text-slate-400 font-medium select-none pr-4">/</span>
+                                <span id="page-total" class="text-sm font-medium text-[#f5f5f5]">0</span>
                             </div>
-                            <button id="next-page"
-                                class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button id="next-page" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
+                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
                         </div>
 
-                        <!-- Zoom -->
-                        <div class="flex items-center space-x-2 bg-slate-100 p-1 rounded-xl">
-                            <button id="zoom-out"
-                                class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center space-x-2 rounded-xl">
+                            <button id="zoom-out" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
+                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M20 12H4" />
                                 </svg>
                             </button>
-                            <select id="zoom-select"
-                                class="bg-transparent border-none text-xs font-bold focus:ring-0 cursor-pointer text-slate-700 py-0 pr-8">
+                            <select id="zoom-select" class="bg-transparent rounded-lg text-xs font-medium cursor-pointer text-[#f5f5f5] py-1 px-2 border border-[#3d3d3d]
+                                hover:border-[#0A77F3] hover:text-[#0A77F3] transition-all duration-300">
                                 <option value="0.5">50%</option>
                                 <option value="0.75">75%</option>
                                 <option value="1" selected>100%</option>
@@ -156,9 +150,9 @@
                                 <option value="page-fit">Ajuste</option>
                                 <option value="page-width">Ancho</option>
                             </select>
-                            <button id="zoom-in"
-                                class="p-1.5 hover:bg-white hover:shadow-sm rounded-lg transition-all text-slate-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button id="zoom-in" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
+                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 4v16m8-8H4" />
                                 </svg>
@@ -166,19 +160,46 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center">
-                        <button id="download-btn" title="Descargar"
-                            class="p-2.5 bg-primary text-white rounded-xl shadow-sm hover:shadow-md hover:bg-blue-600 transition-all">
+                    <!-- Segment 3 -->
+                    <div class="flex flex-1 items-center justify-end">
+                        <button id="print-btn" title="Imprimir" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
+                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                             </svg>
                         </button>
                     </div>
                 </div>
             </footer>
+
+            <div class="flex-1 flex flex-row overflow-hidden">
+                <aside id="sidebar"
+                    class="hidden w-64 bg-black/80 backdrop-blur-sm border-r border-[#3d3d3d] flex flex-col transition-all duration-300 z-40">
+                    <div id="thumbnail-list" class="flex-1 overflow-y-auto scrollbar-custom p-5 space-y-6"></div>
+                </aside>
+
+                <div id="viewer-container"
+                    class="flex-1 overflow-auto p-10 flex flex-col items-center bg-black/80 backdrop-blur-sm scroll-smooth scrollbar-custom">
+                    <div id="loading-spinner" class="mt-20 flex space-x-2 justify-center items-center">
+                        <div class="h-3 w-3 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                        <div class="h-3 w-3 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                        <div class="h-3 w-3 bg-primary rounded-full animate-bounce"></div>
+                    </div>
+                    <div id="error-message"
+                        class="hidden mt-20 max-w-md p-6 bg-red-50 border border-red-200 rounded-2xl text-center text-red-600">
+                        <p class="font-medium">No se pudo cargar el PDF.</p>
+                        <p class="text-sm opacity-75 mt-1">Verifica la URL y los permisos CORS.</p>
+                    </div>
+                    <canvas id="pdf-canvas"
+                        class="hidden shadow-premium bg-white transition-transform duration-200"></canvas>
+                </div>
+            </div>
         </main>
     </div>
+
+    <!-- Hidden Print Container -->
+    <div id="print-container" class="hidden"></div>
 
     <script src="app.js"></script>
 </body>

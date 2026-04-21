@@ -4,7 +4,7 @@ class PDFViewer {
     constructor() {
         this.pdfDoc = null;
         this.pageNum = 1;
-        this.scale = 1.0;
+        this.scale = 1.5;
         this.pages = [];
 
         this.prevBtn = document.getElementById('prev-page');
@@ -63,6 +63,7 @@ class PDFViewer {
             await this.loadDocument(pdfUrl);
             const fileName = pdfUrl.split('/').pop().split('?')[0];
             this.docTitle.textContent = decodeURIComponent(fileName) || 'Documento';
+            this.autoScale('page-height');
             this.renderThumbnails();
         } catch (error) {
             console.error('Error loading PDF:', error);

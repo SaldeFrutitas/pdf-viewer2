@@ -23,4 +23,4 @@ index.html?file=your-document.pdf
 ```
 
 ---
-Developed by [digiApps](https://digiapps.com.co)
+Developed by [digiApps](https://www.digiapps.com.co/)

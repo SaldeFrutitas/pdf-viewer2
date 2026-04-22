@@ -53,21 +53,42 @@ class PDFViewer {
 
     async init() {
         this.setupEventListeners();
-        const urlParams = new URLSearchParams(window.location.search);
-        let pdfUrl = urlParams.get('file') || urlParams.get('url');
+        const search = window.location.search;
+        let pdfUrl = null;
+
+        const fileMatch = search.match(/[?&](?:file|url)=(.+)/);
+        if (fileMatch) {
+            let extracted = fileMatch[1];
+            if (extracted.startsWith('http%3A') || extracted.startsWith('https%3A')) {
+                pdfUrl = decodeURIComponent(extracted);
+            } else {
+                pdfUrl = extracted;
+            }
+        }
+
         if (!pdfUrl) {
             pdfUrl = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
         }
         this.currentUrl = pdfUrl;
-        try {
-            await this.loadDocument(pdfUrl);
-            const fileName = pdfUrl.split('/').pop().split('?')[0];
-            this.docTitle.textContent = decodeURIComponent(fileName) || 'Documento';
+        const fileName = decodeURIComponent(pdfUrl.split('/').pop().split('?')[0]) || 'Documento';
+        const onSuccess = () => {
+            this.docTitle.textContent = fileName;
+            this.docTitle.classList.remove('hidden');
             this.autoScale('page-height');
             this.renderThumbnails();
-        } catch (error) {
-            console.error('Error loading PDF:', error);
-            this.showError();
+        };
+        try {
+            await this.loadDocument(pdfUrl);
+            onSuccess();
+        } catch (e) {
+            try {
+                const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(pdfUrl)}`;
+                await this.loadDocument(proxy);
+                onSuccess();
+            } catch (e2) {
+                console.error('Error loading PDF:', e2);
+                this.showError();
+            }
         }
     }
 

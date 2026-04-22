@@ -24,6 +24,12 @@ class PDFViewer {
         this.sidebarToggle = document.getElementById('sidebar-toggle');
         this.thumbnailList = document.getElementById('thumbnail-list');
         this.viewModeToggleBtn = document.getElementById('view-mode-toggle');
+        
+        this.isDragging = false;
+        this.startX = 0;
+        this.startY = 0;
+        this.scrollLeft = 0;
+        this.scrollTop = 0;
         this.isBookMode = false;
 
         this.lazyObserver = new IntersectionObserver((entries) => {
@@ -126,6 +132,40 @@ class PDFViewer {
             if (e.key === 'ArrowRight' || e.key === 'PageDown') this.scrollToPage(this.pageNum + 1);
             if (e.key === 'ArrowLeft' || e.key === 'PageUp') this.scrollToPage(this.pageNum - 1);
         });
+
+        this.viewerContainer.style.cursor = 'grab';
+
+        this.viewerContainer.addEventListener('mousedown', (e) => {
+            this.isDragging = true;
+            this.viewerContainer.style.cursor = 'grabbing';
+            this.startX = e.pageX - this.viewerContainer.offsetLeft;
+            this.startY = e.pageY - this.viewerContainer.offsetTop;
+            this.scrollLeft = this.viewerContainer.scrollLeft;
+            this.scrollTop = this.viewerContainer.scrollTop;
+        });
+
+        this.viewerContainer.addEventListener('mouseleave', () => {
+            if (!this.isDragging) return;
+            this.isDragging = false;
+            this.viewerContainer.style.cursor = 'grab';
+        });
+
+        this.viewerContainer.addEventListener('mouseup', () => {
+            if (!this.isDragging) return;
+            this.isDragging = false;
+            this.viewerContainer.style.cursor = 'grab';
+        });
+
+        this.viewerContainer.addEventListener('mousemove', (e) => {
+            if (!this.isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - this.viewerContainer.offsetLeft;
+            const y = e.pageY - this.viewerContainer.offsetTop;
+            const walkX = (x - this.startX) * 1.5;
+            const walkY = (y - this.startY) * 1.5;
+            this.viewerContainer.scrollLeft = this.scrollLeft - walkX;
+            this.viewerContainer.scrollTop = this.scrollTop - walkY;
+        });
     }
 
     async loadDocument(url) {
@@ -155,11 +195,15 @@ class PDFViewer {
         this.pages = [];
 
         if (this.isBookMode) {
-            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 grid justify-center justify-items-center items-start gap-4 md:gap-4 bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 grid justify-items-center items-start gap-4 md:gap-8 bg-transparent scrollbar-custom';
             this.viewerContainer.style.gridTemplateColumns = 'max-content max-content';
+            this.viewerContainer.style.alignItems = '';
+            this.viewerContainer.style.justifyContent = 'safe center';
         } else {
-            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 flex flex-col items-center bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 flex flex-col gap-4 md:gap-8 bg-transparent scrollbar-custom';
             this.viewerContainer.style.gridTemplateColumns = '';
+            this.viewerContainer.style.justifyContent = '';
+            this.viewerContainer.style.alignItems = 'safe center';
         }
 
         for (let i = 1; i <= this.pdfDoc.numPages; i++) {
@@ -280,12 +324,16 @@ class PDFViewer {
     }
     updateViewMode() {
         if (this.isBookMode) {
-            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 grid justify-center justify-items-center items-start gap-4 md:gap-8 bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 grid justify-items-center items-start gap-4 md:gap-8 bg-transparent scrollbar-custom';
             this.viewerContainer.style.gridTemplateColumns = 'max-content max-content';
+            this.viewerContainer.style.alignItems = '';
+            this.viewerContainer.style.justifyContent = 'safe center';
             this.viewModeToggleBtn.classList.add('text-[#0A77F3]', 'border-[#0A77F3]');
         } else {
-            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 flex flex-col items-center bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 flex flex-col gap-4 md:gap-8 bg-transparent scrollbar-custom';
             this.viewerContainer.style.gridTemplateColumns = '';
+            this.viewerContainer.style.justifyContent = '';
+            this.viewerContainer.style.alignItems = 'safe center';
             this.viewModeToggleBtn.classList.remove('text-[#0A77F3]', 'border-[#0A77F3]');
         }
 

@@ -167,11 +167,7 @@ class PDFViewer {
             container.id = `page-container-${i}`;
             
             if (this.isBookMode) {
-                if (i === 1) {
-                    container.className = 'page-wrapper mb-8 py-4 flex justify-center w-full min-h-[500px] transition-all';
-                } else {
-                    container.className = 'page-wrapper mb-4 py-4 flex justify-center w-1/2 px-2 min-h-[500px] transition-all';
-                }
+                container.className = 'page-wrapper mb-4 py-4 flex justify-center w-1/2 px-2 min-h-[500px] transition-all';
             } else {
                 container.className = 'page-wrapper mb-8 py-4 flex justify-center w-full min-h-[500px] transition-all';
             }
@@ -292,13 +288,8 @@ class PDFViewer {
             this.viewerContainer.classList.remove('flex-col', 'items-center');
             
             this.pages.forEach(p => {
-                if (p.num === 1) {
-                    p.container.classList.add('w-full', 'mb-8');
-                    p.container.classList.remove('w-1/2', 'mb-4', 'px-2');
-                } else {
-                    p.container.classList.remove('w-full', 'mb-8');
-                    p.container.classList.add('w-1/2', 'mb-4', 'px-2');
-                }
+                p.container.classList.remove('w-full', 'mb-8');
+                p.container.classList.add('w-1/2', 'mb-4', 'px-2');
             });
             this.viewModeToggleBtn.classList.add('text-[#0A77F3]', 'border-[#0A77F3]');
         } else {

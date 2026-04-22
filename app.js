@@ -14,7 +14,6 @@ class PDFViewer {
         this.zoomInBtn = document.getElementById('zoom-in');
         this.zoomOutBtn = document.getElementById('zoom-out');
         this.zoomSelect = document.getElementById('zoom-select');
-        this.docTitle = document.getElementById('doc-title');
         this.loadingSpinner = document.getElementById('loading-spinner');
         this.errorMsg = document.getElementById('error-message');
         this.sidebar = document.getElementById('sidebar');
@@ -70,10 +69,7 @@ class PDFViewer {
             pdfUrl = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
         }
         this.currentUrl = pdfUrl;
-        const fileName = decodeURIComponent(pdfUrl.split('/').pop().split('?')[0]) || 'Documento';
         const onSuccess = () => {
-            this.docTitle.textContent = fileName;
-            this.docTitle.classList.remove('hidden');
             this.autoScale('page-height');
             this.renderThumbnails();
         };

@@ -217,7 +217,7 @@ class PDFViewer {
             canvas.className = 'w-16 h-auto bg-white border-2 border-transparent rounded-lg shadow-sm group-hover:shadow-md transition-all';
             const label = document.createElement('span');
             label.className = `text-xs tracking-wider ${i === this.pageNum ? 'text-primary' : 'text-[#f5f5f5]'}`;
-            label.textContent = `Page  ${i}`;
+            label.textContent = `${i}`;
             item.appendChild(canvas);
             item.appendChild(label);
             this.thumbnailList.appendChild(item);

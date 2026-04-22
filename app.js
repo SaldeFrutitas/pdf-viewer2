@@ -66,7 +66,7 @@ class PDFViewer {
         }
 
         if (!pdfUrl) {
-            pdfUrl = 'https://sky-dev-026fdb2c-df03-4c19-b8ab-627b6597973c.9286347a255806fbec34dc2e4dccd32a.r2.cloudflarestorage.com/1016/botanica-morforlogia-taxonomia-y-fitogeografia-20260422003030.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=dd4a00fb81918302cb53dfb131b1fb6c%2F20260422%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260422T011730Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=9db53d1649fea886c9d92183fc70d7a14a4786d22f272c98337979a0048d26c8';
+            pdfUrl = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
         }
         this.currentUrl = pdfUrl;
         const onSuccess = () => {
@@ -214,14 +214,14 @@ class PDFViewer {
             item.className = `thumbnail-item group cursor-pointer flex flex-col items-center gap-2 transition-all hover:scale-105 ${i === this.pageNum ? 'active' : ''}`;
             item.dataset.page = i;
             const canvas = document.createElement('canvas');
-            canvas.className = 'w-full h-auto bg-white border-2 border-transparent rounded-lg shadow-sm group-hover:shadow-md transition-all';
+            canvas.className = 'w-24 h-auto bg-white border-2 border-transparent rounded-lg shadow-sm group-hover:shadow-md transition-all';
             const label = document.createElement('span');
             label.className = `text-xs font-medium tracking-wider ${i === this.pageNum ? 'text-primary' : 'text-[#f5f5f5] opacity-60'}`;
             label.textContent = `Page ${i}`;
             item.appendChild(canvas);
             item.appendChild(label);
             this.thumbnailList.appendChild(item);
-            const viewport = page.getViewport({ scale: 0.3 });
+            const viewport = page.getViewport({ scale: 0.5 });
             canvas.height = viewport.height;
             canvas.width = viewport.width;
             await page.render({

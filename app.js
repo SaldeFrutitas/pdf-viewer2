@@ -214,7 +214,7 @@ class PDFViewer {
             item.className = `thumbnail-item group cursor-pointer flex flex-col items-center gap-2 transition-all hover:scale-105 ${i === this.pageNum ? 'active' : ''}`;
             item.dataset.page = i;
             const canvas = document.createElement('canvas');
-            canvas.className = 'w-16 h-auto bg-white border-2 border-transparent rounded-lg shadow-sm group-hover:shadow-md transition-all';
+            canvas.className = 'w-20 h-auto bg-white border-2 border-transparent rounded-lg shadow-sm group-hover:shadow-md transition-all';
             const label = document.createElement('span');
             label.className = `text-xs tracking-wider ${i === this.pageNum ? 'text-primary' : 'text-[#f5f5f5]'}`;
             label.textContent = `${i}`;

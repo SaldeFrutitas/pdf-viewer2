@@ -66,7 +66,7 @@ class PDFViewer {
         }
 
         if (!pdfUrl) {
-            pdfUrl = 'https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/web/compressed.tracemonkey-pldi-09.pdf';
+            pdfUrl = 'https://sky-dev-026fdb2c-df03-4c19-b8ab-627b6597973c.9286347a255806fbec34dc2e4dccd32a.r2.cloudflarestorage.com/1016/botanica-morforlogia-taxonomia-y-fitogeografia-20260422003030.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Checksum-Mode=ENABLED&X-Amz-Credential=dd4a00fb81918302cb53dfb131b1fb6c%2F20260422%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20260422T011730Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&x-id=GetObject&X-Amz-Signature=9db53d1649fea886c9d92183fc70d7a14a4786d22f272c98337979a0048d26c8';
         }
         this.currentUrl = pdfUrl;
         const onSuccess = () => {

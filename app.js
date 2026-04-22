@@ -155,22 +155,18 @@ class PDFViewer {
         this.pages = [];
 
         if (this.isBookMode) {
-            this.viewerContainer.classList.add('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
-            this.viewerContainer.classList.remove('flex-col', 'items-center');
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 grid justify-center justify-items-center items-start gap-4 md:gap-4 bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.style.gridTemplateColumns = 'max-content max-content';
         } else {
-            this.viewerContainer.classList.remove('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
-            this.viewerContainer.classList.add('flex-col', 'items-center');
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 flex flex-col items-center bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.style.gridTemplateColumns = '';
         }
 
         for (let i = 1; i <= this.pdfDoc.numPages; i++) {
             const container = document.createElement('div');
             container.id = `page-container-${i}`;
-            
-            if (this.isBookMode) {
-                container.className = 'page-wrapper mb-4 py-4 flex justify-center w-1/2 px-2 min-h-[500px] transition-all';
-            } else {
-                container.className = 'page-wrapper mb-8 py-4 flex justify-center w-full min-h-[500px] transition-all';
-            }
+
+            container.className = 'page-wrapper flex justify-center transition-all';
 
             container.dataset.page = i;
             container.style.aspectRatio = `${aspectRatio}`;
@@ -256,57 +252,51 @@ class PDFViewer {
     }
 
     updateActiveThumbnail(num) {
-    const items = this.thumbnailList.querySelectorAll('.thumbnail-item');
+        const items = this.thumbnailList.querySelectorAll('.thumbnail-item');
 
-    items.forEach(item => {
-        const canvas = item.querySelector('canvas');
-        const label = item.querySelector('span');
-        const isPage = parseInt(item.dataset.page) === num;
+        items.forEach(item => {
+            const canvas = item.querySelector('canvas');
+            const label = item.querySelector('span');
+            const isPage = parseInt(item.dataset.page) === num;
 
-        if (isPage) {
-            item.classList.add('active');
+            if (isPage) {
+                item.classList.add('active');
 
-            canvas.classList.add('border-primary', 'ring-2', 'ring-primary/20');
+                canvas.classList.add('border-primary', 'ring-2', 'ring-primary/20');
 
-            label.classList.remove('text-[#f5f5f5]', 'opacity-60');
-            label.classList.add('text-primary', 'font-bold');
+                label.classList.remove('text-[#f5f5f5]', 'opacity-60');
+                label.classList.add('text-primary', 'font-bold');
 
-            item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        } else {
-            item.classList.remove('active');
+            } else {
+                item.classList.remove('active');
 
-            canvas.classList.remove('border-primary', 'ring-2', 'ring-primary/20');
-            label.classList.remove('text-primary');
-            label.classList.add('text-[#f5f5f5]', 'font-light', 'opacity-60');
-        }
-    });
-}
+                canvas.classList.remove('border-primary', 'ring-2', 'ring-primary/20');
+                label.classList.remove('text-primary');
+                label.classList.add('text-[#f5f5f5]', 'font-light', 'opacity-60');
+            }
+        });
+    }
     updateViewMode() {
         if (this.isBookMode) {
-            this.viewerContainer.classList.add('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
-            this.viewerContainer.classList.remove('flex-col', 'items-center');
-            
-            this.pages.forEach(p => {
-                p.container.classList.remove('w-full', 'mb-8');
-                p.container.classList.add('w-1/2', 'mb-4', 'px-2');
-            });
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 grid justify-center justify-items-center items-start gap-4 md:gap-8 bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.style.gridTemplateColumns = 'max-content max-content';
             this.viewModeToggleBtn.classList.add('text-[#0A77F3]', 'border-[#0A77F3]');
         } else {
-            this.viewerContainer.classList.remove('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
-            this.viewerContainer.classList.add('flex-col', 'items-center');
-            
-            this.pages.forEach(p => {
-                p.container.classList.add('w-full', 'mb-8');
-                p.container.classList.remove('w-1/2', 'mb-4', 'px-2');
-            });
+            this.viewerContainer.className = 'flex-1 overflow-auto p-4 md:p-10 flex flex-col items-center bg-transparent scroll-smooth scrollbar-custom';
+            this.viewerContainer.style.gridTemplateColumns = '';
             this.viewModeToggleBtn.classList.remove('text-[#0A77F3]', 'border-[#0A77F3]');
         }
-        
+
+        this.pages.forEach(p => {
+            p.container.className = 'page-wrapper flex justify-center transition-all';
+        });
+
         if (this.zoomSelect.value === 'page-fit' || this.zoomSelect.value === 'page-width') {
-             this.autoScale(this.zoomSelect.value);
+            this.autoScale(this.zoomSelect.value);
         } else {
-             this.reRenderAllPages();
+            this.reRenderAllPages();
         }
     }
 
@@ -319,11 +309,11 @@ class PDFViewer {
     autoScale(mode) {
         const padding = 80;
         let availableWidth = this.viewerContainer.clientWidth - (padding * 2);
-        
+
         if (this.isBookMode) {
             availableWidth = (this.viewerContainer.clientWidth / 2) - padding;
         }
-        
+
         const availableHeight = this.viewerContainer.clientHeight - (padding * 2);
         this.pdfDoc.getPage(this.pageNum).then(page => {
             const unscaledViewport = page.getViewport({ scale: 1.0 });
@@ -347,8 +337,9 @@ class PDFViewer {
             p.rendered = false;
             p.rendering = false;
             p.container.innerHTML = '';
+            p.container.style.width = `${viewport.width}px`;
+            p.container.style.height = `${viewport.height}px`;
             p.container.style.aspectRatio = `${aspectRatio}`;
-            p.container.style.minHeight = `${viewport.height}px`;
             this.lazyObserver.unobserve(p.container);
             this.lazyObserver.observe(p.container);
         });

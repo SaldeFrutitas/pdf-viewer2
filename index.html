@@ -170,19 +170,19 @@
 
             <div class="flex-1 flex flex-row overflow-hidden">
                 <aside id="sidebar"
-                    class="hidden w-56 border-r border-[#3d3d3d] flex flex-col transition-all duration-300 z-40">
+                    class="hidden w-56 border-r border-[#252525] flex flex-col transition-all duration-300 z-40">
                     <div id="thumbnail-list" class="flex-1 overflow-y-auto scrollbar-custom p-5 space-y-6 "></div>
                 </aside>
 
                 <div id="viewer-container"
                     class="flex-1 overflow-auto p-10 flex flex-col items-center bg-transparent scroll-smooth scrollbar-custom">
-                    <div id="loading-spinner" class="mt-20 flex space-x-2 justify-center items-center">
+                    <div id="loading-spinner" class="mt-20 flex space-x-2 justify-center items-center col-span-full">
                         <div class="h-3 w-3 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
                         <div class="h-3 w-3 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
                         <div class="h-3 w-3 bg-primary rounded-full animate-bounce"></div>
                     </div>
                     <div id="error-message"
-                        class="hidden mt-20 max-w-md p-6 bg-red-50 border border-red-200 rounded-2xl text-center text-red-600">
+                        class="hidden mt-20 max-w-md p-6 bg-red-50 border border-red-200 rounded-2xl text-center text-red-600 col-span-full">
                         <p class="font-medium">No se pudo cargar el PDF.</p>
                         <p class="text-sm opacity-75 mt-1">Verifica la URL y los permisos CORS.</p>
                     </div>

@@ -216,8 +216,8 @@ class PDFViewer {
             const canvas = document.createElement('canvas');
             canvas.className = 'w-16 h-auto bg-white border-2 border-transparent rounded-lg shadow-sm group-hover:shadow-md transition-all';
             const label = document.createElement('span');
-            label.className = `text-xs font-medium tracking-wider ${i === this.pageNum ? 'text-primary' : 'text-[#f5f5f5] opacity-60'}`;
-            label.textContent = `Page ${i}`;
+            label.className = `text-xs tracking-wider ${i === this.pageNum ? 'text-primary' : 'text-[#f5f5f5]'}`;
+            label.textContent = `Page  ${i}`;
             item.appendChild(canvas);
             item.appendChild(label);
             this.thumbnailList.appendChild(item);
@@ -233,26 +233,32 @@ class PDFViewer {
     }
 
     updateActiveThumbnail(num) {
-        const items = this.thumbnailList.querySelectorAll('.thumbnail-item');
-        items.forEach(item => {
-            const canvas = item.querySelector('canvas');
-            const label = item.querySelector('span');
-            const isPage = parseInt(item.dataset.page) === num;
-            if (isPage) {
-                item.classList.add('active');
-                canvas.classList.add('border-primary', 'ring-2', 'ring-primary/20');
-                label.classList.add('text-primary');
-                label.classList.remove('opacity-60');
-                item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            } else {
-                item.classList.remove('active');
-                canvas.classList.remove('border-primary', 'ring-2', 'ring-primary/20');
-                label.classList.remove('text-primary');
-                label.classList.add('opacity-60');
-            }
-        });
-    }
+    const items = this.thumbnailList.querySelectorAll('.thumbnail-item');
 
+    items.forEach(item => {
+        const canvas = item.querySelector('canvas');
+        const label = item.querySelector('span');
+        const isPage = parseInt(item.dataset.page) === num;
+
+        if (isPage) {
+            item.classList.add('active');
+
+            canvas.classList.add('border-primary', 'ring-2', 'ring-primary/20');
+
+            label.classList.remove('text-[#f5f5f5]', 'opacity-60');
+            label.classList.add('text-primary', 'font-bold');
+
+            item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        } else {
+            item.classList.remove('active');
+
+            canvas.classList.remove('border-primary', 'ring-2', 'ring-primary/20');
+            label.classList.remove('text-primary');
+            label.classList.add('text-[#f5f5f5]', 'font-light', 'opacity-60');
+        }
+    });
+}
     changeScale(delta) {
         this.scale = Math.max(0.25, Math.min(5.0, this.scale + delta));
         this.zoomSelect.value = this.scale;

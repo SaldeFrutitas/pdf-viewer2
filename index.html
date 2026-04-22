@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium PDF Viewer</title>
+    <title>digiApps PDF Viewer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -85,7 +85,7 @@
                 <div id="toolbar"
                     class="rounded-t-2xl shadow-toolbar w-full flex items-center justify-between bg-[#252525] p-1 translate-y-0 transition-transform">
 
-                    <div class="flex flex-1 items-center justify-start gap-8">
+                    <div class="flex flex-1 items-center justify-start gap-6">
                         <button id="sidebar-toggle" title="Miniaturas" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
                                 hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +93,7 @@
                                     d="M4 6h16M4 12h16M4 18h7" />
                             </svg>
                         </button>
-                        <div class="flex items-center space-x-2 rounded-xl">
+                        <div class="flex items-center space-x-1 rounded-xl">
                             <button id="prev-page" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
                                 hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,8 +103,8 @@
                             </button>
                             <div class="flex items-center">
                                 <input type="number" id="page-num" value="1" min="1"
-                                    class="w-10 bg-transparent border-none text-center font-bold text-sm focus:ring-0 p-0 text-[#f5f5f5]">
-                                <span class="text-slate-400 font-medium select-none pr-4">/</span>
+                                    class="w-8 bg-transparent border-none text-center font-bold text-sm focus:ring-0 p-0 text-[#f5f5f5]">
+                                <span class="text-slate-400 font-medium select-none pr-3">/</span>
                                 <span id="page-total" class="text-sm font-medium text-[#f5f5f5]">0</span>
                             </div>
                             <button id="next-page" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
@@ -117,7 +117,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-center space-x-6">
+                    <div class="flex items-center justify-center space-x-4">
                         <div class="flex items-center space-x-2 rounded-xl">
                             <button id="zoom-out" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
                                 hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">

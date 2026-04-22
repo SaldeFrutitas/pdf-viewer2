@@ -23,6 +23,8 @@ class PDFViewer {
         this.currentUrl = null;
         this.sidebarToggle = document.getElementById('sidebar-toggle');
         this.thumbnailList = document.getElementById('thumbnail-list');
+        this.viewModeToggleBtn = document.getElementById('view-mode-toggle');
+        this.isBookMode = false;
 
         this.lazyObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -111,6 +113,12 @@ class PDFViewer {
                 this.reRenderAllPages();
             }
         });
+        if (this.viewModeToggleBtn) {
+            this.viewModeToggleBtn.addEventListener('click', () => {
+                this.isBookMode = !this.isBookMode;
+                this.updateViewMode();
+            });
+        }
         if (this.printBtn) {
             this.printBtn.addEventListener('click', () => this.printDocument());
         }
@@ -145,10 +153,29 @@ class PDFViewer {
         this.viewerContainer.appendChild(loadingSpinner);
         this.viewerContainer.appendChild(errorMsg);
         this.pages = [];
+
+        if (this.isBookMode) {
+            this.viewerContainer.classList.add('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
+            this.viewerContainer.classList.remove('flex-col', 'items-center');
+        } else {
+            this.viewerContainer.classList.remove('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
+            this.viewerContainer.classList.add('flex-col', 'items-center');
+        }
+
         for (let i = 1; i <= this.pdfDoc.numPages; i++) {
             const container = document.createElement('div');
             container.id = `page-container-${i}`;
-            container.className = 'page-wrapper mb-8 py-4 flex justify-center w-full min-h-[500px] transition-all';
+            
+            if (this.isBookMode) {
+                if (i === 1) {
+                    container.className = 'page-wrapper mb-8 py-4 flex justify-center w-full min-h-[500px] transition-all';
+                } else {
+                    container.className = 'page-wrapper mb-4 py-4 flex justify-center w-1/2 px-2 min-h-[500px] transition-all';
+                }
+            } else {
+                container.className = 'page-wrapper mb-8 py-4 flex justify-center w-full min-h-[500px] transition-all';
+            }
+
             container.dataset.page = i;
             container.style.aspectRatio = `${aspectRatio}`;
             this.viewerContainer.appendChild(container);
@@ -259,6 +286,39 @@ class PDFViewer {
         }
     });
 }
+    updateViewMode() {
+        if (this.isBookMode) {
+            this.viewerContainer.classList.add('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
+            this.viewerContainer.classList.remove('flex-col', 'items-center');
+            
+            this.pages.forEach(p => {
+                if (p.num === 1) {
+                    p.container.classList.add('w-full', 'mb-8');
+                    p.container.classList.remove('w-1/2', 'mb-4', 'px-2');
+                } else {
+                    p.container.classList.remove('w-full', 'mb-8');
+                    p.container.classList.add('w-1/2', 'mb-4', 'px-2');
+                }
+            });
+            this.viewModeToggleBtn.classList.add('text-[#0A77F3]', 'border-[#0A77F3]');
+        } else {
+            this.viewerContainer.classList.remove('flex-row', 'flex-wrap', 'justify-center', 'items-start', 'content-start');
+            this.viewerContainer.classList.add('flex-col', 'items-center');
+            
+            this.pages.forEach(p => {
+                p.container.classList.add('w-full', 'mb-8');
+                p.container.classList.remove('w-1/2', 'mb-4', 'px-2');
+            });
+            this.viewModeToggleBtn.classList.remove('text-[#0A77F3]', 'border-[#0A77F3]');
+        }
+        
+        if (this.zoomSelect.value === 'page-fit' || this.zoomSelect.value === 'page-width') {
+             this.autoScale(this.zoomSelect.value);
+        } else {
+             this.reRenderAllPages();
+        }
+    }
+
     changeScale(delta) {
         this.scale = Math.max(0.25, Math.min(5.0, this.scale + delta));
         this.zoomSelect.value = this.scale;
@@ -267,7 +327,12 @@ class PDFViewer {
 
     autoScale(mode) {
         const padding = 80;
-        const availableWidth = this.viewerContainer.clientWidth - (padding * 2);
+        let availableWidth = this.viewerContainer.clientWidth - (padding * 2);
+        
+        if (this.isBookMode) {
+            availableWidth = (this.viewerContainer.clientWidth / 2) - padding;
+        }
+        
         const availableHeight = this.viewerContainer.clientHeight - (padding * 2);
         this.pdfDoc.getPage(this.pageNum).then(page => {
             const unscaledViewport = page.getViewport({ scale: 1.0 });

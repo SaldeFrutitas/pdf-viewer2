@@ -81,7 +81,8 @@ class PDFViewer {
         }
         this.currentUrl = fileUrl;
 
-        if (fileUrl.toLowerCase().endsWith('.docx')) {
+        const urlWithoutQuery = fileUrl.split('?')[0].toLowerCase();
+        if (urlWithoutQuery.endsWith('.docx')) {
             this.isDocxMode = true;
             await this.loadDocx(fileUrl);
             return;

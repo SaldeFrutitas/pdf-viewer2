@@ -28,6 +28,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     <style type="text/tailwindcss">
         @layer utilities {
             .scrollbar-custom::-webkit-scrollbar {
@@ -75,6 +76,28 @@
                 margin: 0 !important;
             }
         }
+        
+        .docx-content {
+            background: white;
+            color: black;
+            padding: 3rem;
+            max-width: 816px;
+            width: 100%;
+            margin: 2rem auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+        }
+        .docx-content p { margin-bottom: 1em; line-height: 1.6; }
+        .docx-content h1, .docx-content h2, .docx-content h3, .docx-content h4 { font-weight: bold; margin-top: 1.5em; margin-bottom: 0.5em; }
+        .docx-content h1 { font-size: 2em; }
+        .docx-content h2 { font-size: 1.5em; }
+        .docx-content h3 { font-size: 1.17em; }
+        .docx-content ul, .docx-content ol { margin-bottom: 1em; padding-left: 2em; }
+        .docx-content ul { list-style-type: disc; }
+        .docx-content ol { list-style-type: decimal; }
+        .docx-content table { border-collapse: collapse; width: 100%; margin-bottom: 1em; }
+        .docx-content th, .docx-content td { border: 1px solid #ccc; padding: 8px; }
+        .docx-content img { max-width: 100%; height: auto; }
     </style>
 </head>
 
@@ -83,7 +106,7 @@
         <main id="main-content" class="flex-1 flex flex-col overflow-hidden rounded-2xl">
             <footer class="flex justify-center pb-0 z-50">
                 <div id="toolbar"
-                    class="rounded-t-2xl shadow-toolbar w-full flex items-center justify-between bg-[#252525] p-1 translate-y-0 transition-transform">
+                    class="rounded-t-2xl shadow-toolbar w-full flex items-center justify-between bg-black/80 backdrop-blur-md p-1 translate-y-0 transition-transform">
 
                     <div class="flex flex-1 items-center justify-start gap-6">
                         <button id="sidebar-toggle" title="View Thumbnails" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
@@ -136,7 +159,7 @@
                                 <option value="2">200%</option>
                                 <option value="3">300%</option>
                                 <option value="4">400%</option>
-                                <option value="page-fit">Ajuste</option>
+                                <option value="page-height">Ajuste</option>
                                 <option value="page-width" selected>Ancho</option>
                             </select>
                             <button id="zoom-in" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]

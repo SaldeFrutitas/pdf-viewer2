@@ -24,6 +24,8 @@ class PDFViewer {
         this.sidebarToggle = document.getElementById('sidebar-toggle');
         this.thumbnailList = document.getElementById('thumbnail-list');
         this.viewModeToggleBtn = document.getElementById('view-mode-toggle');
+        this.rotateLeftBtn = document.getElementById('rotate-left');
+        this.rotateRightBtn = document.getElementById('rotate-right');
 
         this.isDragging = false;
         this.startX = 0;
@@ -33,6 +35,7 @@ class PDFViewer {
         this.isBookMode = false;
         this.isDocxMode = false;
         this.isZooming = false;
+        this.rotation = 0;
 
         this.lazyObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -143,6 +146,12 @@ class PDFViewer {
         if (this.printBtn) {
             this.printBtn.addEventListener('click', () => this.printDocument());
         }
+        if (this.rotateLeftBtn) {
+            this.rotateLeftBtn.addEventListener('click', () => this.rotate(-90));
+        }
+        if (this.rotateRightBtn) {
+            this.rotateRightBtn.addEventListener('click', () => this.rotate(90));
+        }
         window.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === 'PageDown') this.scrollToPage(this.pageNum + 1);
             if (e.key === 'ArrowLeft' || e.key === 'PageUp') this.scrollToPage(this.pageNum - 1);
@@ -243,7 +252,7 @@ class PDFViewer {
 
     async createPagePlaceholders() {
         const firstPage = await this.pdfDoc.getPage(1);
-        const viewport = firstPage.getViewport({ scale: this.scale });
+        const viewport = firstPage.getViewport({ scale: this.scale, rotation: this.rotation });
         const aspectRatio = viewport.width / viewport.height;
         const loadingSpinner = document.getElementById('loading-spinner');
         const errorMsg = document.getElementById('error-message');
@@ -291,7 +300,7 @@ class PDFViewer {
         pageData.rendering = true;
         try {
             const page = await this.pdfDoc.getPage(pageNum);
-            const viewport = page.getViewport({ scale: this.scale });
+            const viewport = page.getViewport({ scale: this.scale, rotation: this.rotation });
             const canvas = document.createElement('canvas');
             canvas.className = 'shadow-premium bg-white transition-opacity duration-500 opacity-0';
             const context = canvas.getContext('2d');
@@ -350,7 +359,7 @@ class PDFViewer {
             item.appendChild(canvas);
             item.appendChild(label);
             this.thumbnailList.appendChild(item);
-            const viewport = page.getViewport({ scale: 0.5 });
+            const viewport = page.getViewport({ scale: 0.5, rotation: this.rotation });
             canvas.height = viewport.height;
             canvas.width = viewport.width;
             await page.render({
@@ -424,6 +433,18 @@ class PDFViewer {
         }
     }
 
+    rotate(delta) {
+        this.rotation = (this.rotation + delta + 360) % 360;
+        if (this.isDocxMode) return;
+        
+        if (this.zoomSelect.value === 'page-fit' || this.zoomSelect.value === 'page-width' || this.zoomSelect.value === 'page-height') {
+            this.autoScale(this.zoomSelect.value);
+        } else {
+            this.reRenderAllPages();
+        }
+        this.renderThumbnails();
+    }
+
     updateZoomUI() {
         let optionExists = Array.from(this.zoomSelect.options).some(opt => opt.value == this.scale);
         let customOpt = document.getElementById('custom-zoom-opt');
@@ -472,7 +493,7 @@ class PDFViewer {
         const availableHeight = this.viewerContainer.clientHeight - paddingY;
 
         this.pdfDoc.getPage(this.pageNum).then(page => {
-            const unscaledViewport = page.getViewport({ scale: 1.0 });
+            const unscaledViewport = page.getViewport({ scale: 1.0, rotation: this.rotation });
             if (mode === 'page-width') {
                 this.scale = availableWidth / unscaledViewport.width;
             } else if (mode === 'page-fit' || mode === 'page-height') {
@@ -510,7 +531,7 @@ class PDFViewer {
         }
 
         const firstPage = await this.pdfDoc.getPage(1);
-        const viewport = firstPage.getViewport({ scale: this.scale });
+        const viewport = firstPage.getViewport({ scale: this.scale, rotation: this.rotation });
         const aspectRatio = viewport.width / viewport.height;
 
         this.pages.forEach(p => {
@@ -577,7 +598,7 @@ class PDFViewer {
             const pages = Array.from({ length: this.pdfDoc.numPages }, (_, i) => i + 1);
             const renderPromises = pages.map(async (num) => {
                 const page = await this.pdfDoc.getPage(num);
-                const viewport = page.getViewport({ scale: 1.5 });
+                const viewport = page.getViewport({ scale: 1.5, rotation: this.rotation });
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 canvas.height = viewport.height;

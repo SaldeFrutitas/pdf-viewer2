@@ -139,6 +139,20 @@
 
 					<div class="flex items-center justify-center space-x-4">
 						<div class="flex items-center space-x-2 rounded-xl">
+							<button id="rotate-left" title="Rotate left" class="text-white p-1 border border-transparent hover:border-[#0A77F3] scale-x-[-1]
+                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
+								<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="mask_rotate_left" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
+										height="24">
+										<rect width="24" height="24" fill="currentColor" />
+									</mask>
+									<g mask="url(#mask_rotate_left)">
+										<path
+											d="M9.71875 10.0498C10.8903 8.87853 12.7894 8.87853 13.9609 10.0498L16.79 12.8789L16.8955 12.9902C17.9595 14.1678 17.9248 15.9861 16.79 17.1211L13.9609 19.9492L13.8496 20.0557C12.7099 21.0854 10.9698 21.0854 9.83008 20.0557L9.71875 19.9492L6.88965 17.1211C5.75489 15.9861 5.72017 14.1678 6.78418 12.9902L6.88965 12.8789L9.71875 10.0498ZM12.5469 11.4639C12.1564 11.0736 11.5233 11.0736 11.1328 11.4639L8.30469 14.293C7.91416 14.6835 7.91416 15.3165 8.30469 15.707L11.1328 18.5352C11.5233 18.9257 12.1564 18.9257 12.5469 18.5352L15.375 15.707C15.7655 15.3165 15.7655 14.6835 15.375 14.293L12.5469 11.4639ZM11.9199 3C13.1224 3 14.263 3.25633 15.3408 3.76953C16.4188 4.28284 17.3321 5.00961 18.0801 5.94824V3.87988H19.8398V9.16016H14.5605V7.39941H16.9795C16.3782 6.57835 15.6376 5.93309 14.7578 5.46387C13.8779 4.99462 12.9318 4.75977 11.9199 4.75977C10.2042 4.75982 8.74889 5.35767 7.55371 6.55273C6.35843 7.74802 5.76074 9.20399 5.76074 10.9199H4C4 8.72001 4.77061 6.84951 6.31055 5.30957C7.85038 3.76985 9.72023 3.00006 11.9199 3Z"
+											fill="currentColor" />
+									</g>
+								</svg>
+							</button>
 							<button id="zoom-out" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
                                 hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
 								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,18 +178,18 @@
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
 								</svg>
 							</button>
-							<button id="rotate-left" title="Rotate left" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
+							<button id="rotate-right" title="Rotate right" class="text-white p-1 border border-transparent hover:border-[#0A77F3]
                                 hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
-								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-										d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-								</svg>
-							</button>
-							<button id="rotate-right" title="Rotate right" class="text-white p-1.5 border border-transparent hover:border-[#0A77F3]
-                                hover:shadow-sm hover:text-[#0A77F3] rounded-xl transition-all duration-300">
-								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-										d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6" />
+								<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="mask_rotate_right" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24"
+										height="24">
+										<rect width="24" height="24" fill="currentColor" />
+									</mask>
+									<g mask="url(#mask_rotate_right)">
+										<path
+											d="M9.71875 10.0498C10.8903 8.87853 12.7894 8.87853 13.9609 10.0498L16.79 12.8789L16.8955 12.9902C17.9595 14.1678 17.9248 15.9861 16.79 17.1211L13.9609 19.9492L13.8496 20.0557C12.7099 21.0854 10.9698 21.0854 9.83008 20.0557L9.71875 19.9492L6.88965 17.1211C5.75489 15.9861 5.72017 14.1678 6.78418 12.9902L6.88965 12.8789L9.71875 10.0498ZM12.5469 11.4639C12.1564 11.0736 11.5233 11.0736 11.1328 11.4639L8.30469 14.293C7.91416 14.6835 7.91416 15.3165 8.30469 15.707L11.1328 18.5352C11.5233 18.9257 12.1564 18.9257 12.5469 18.5352L15.375 15.707C15.7655 15.3165 15.7655 14.6835 15.375 14.293L12.5469 11.4639ZM11.9199 3C13.1224 3 14.263 3.25633 15.3408 3.76953C16.4188 4.28284 17.3321 5.00961 18.0801 5.94824V3.87988H19.8398V9.16016H14.5605V7.39941H16.9795C16.3782 6.57835 15.6376 5.93309 14.7578 5.46387C13.8779 4.99462 12.9318 4.75977 11.9199 4.75977C10.2042 4.75982 8.74889 5.35767 7.55371 6.55273C6.35843 7.74802 5.76074 9.20399 5.76074 10.9199H4C4 8.72001 4.77061 6.84951 6.31055 5.30957C7.85038 3.76985 9.72023 3.00006 11.9199 3Z"
+											fill="currentColor" />
+									</g>
 								</svg>
 							</button>
 						</div>

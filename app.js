@@ -232,9 +232,9 @@ class PDFViewer {
             if (viewModeToggle) viewModeToggle.style.visibility = 'hidden';
 
             const rotateLeft = document.getElementById('rotate-left');
-            if (rotateLeft) rotateLeft.style.visibility = 'hidden';
+            if (rotateLeft) rotateLeft.classList.add('hidden');
             const rotateRight = document.getElementById('rotate-right');
-            if (rotateRight) rotateRight.style.visibility = 'hidden';
+            if (rotateRight) rotateRight.classList.add('hidden');
 
             if (this.sidebar) this.sidebar.classList.add('hidden');
 

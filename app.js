@@ -231,6 +231,11 @@ class PDFViewer {
             const viewModeToggle = document.getElementById('view-mode-toggle');
             if (viewModeToggle) viewModeToggle.style.visibility = 'hidden';
 
+            const rotateLeft = document.getElementById('rotate-left');
+            if (rotateLeft) rotateLeft.style.visibility = 'hidden';
+            const rotateRight = document.getElementById('rotate-right');
+            if (rotateRight) rotateRight.style.visibility = 'hidden';
+
             if (this.sidebar) this.sidebar.classList.add('hidden');
 
             this.showLoading(false);
